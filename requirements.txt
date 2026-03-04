@@ -5,3 +5,9 @@ openpyxl
 xgboost
 scikit-learn
 joblib
+mlflow
+matplotlib
+seaborn
+mlflow
+matplotlib
+seaborn
