@@ -2,3 +2,6 @@ pandas
 feast
 pyarrow
 openpyxl
+xgboost
+scikit-learn
+joblib
