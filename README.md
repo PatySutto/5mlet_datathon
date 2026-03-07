@@ -2,6 +2,98 @@
 
 Sistema de classificação de alunos em categorias (pedras) baseado em índices de desempenho educacional usando XGBoost.
 
+## 🎯 Treinamento do Modelo
+
+### Uso Básico
+
+Para treinar o modelo XGBoost com parâmetros padrão:
+
+```bash
+python src/train.py
+```
+
+### Parâmetros Configuráveis
+
+O script permite ajustar os principais hiperparâmetros do XGBoost:
+
+#### Parâmetros do Modelo
+
+- `--max-depth`: Profundidade máxima das árvores (padrão: 6, range: 3-10)
+- `--n-estimators`: Número de árvores/boosting rounds (padrão: 100, range: 50-500)
+- `--learning-rate`: Taxa de aprendizado (padrão: 0.1, range: 0.01-0.3)
+
+#### Parâmetros de Treinamento
+
+- `--test-size`: Proporção dos dados para teste (padrão: 0.2, range: 0.1-0.3)
+- `--random-state`: Seed para reprodutibilidade (padrão: 42)
+
+#### Opções de Execução
+
+- `--no-save`: Não salva o modelo (útil para testes rápidos)
+- `--grid-search`: Ativa busca em grade para encontrar melhores hiperparâmetros
+
+### Exemplos de Treinamento
+
+```bash
+# Treino com parâmetros padrão
+python src/train.py
+
+# Treino com parâmetros customizados
+python src/train.py --max-depth 8 --n-estimators 200 --learning-rate 0.05
+
+# Teste rápido sem salvar modelo
+python src/train.py --max-depth 4 --no-save
+
+# Treino com test split maior
+python src/train.py --test-size 0.25
+```
+
+### Grid Search - Busca de Hiperparâmetros
+
+O grid search testa automaticamente múltiplas combinações de parâmetros para encontrar a melhor configuração:
+
+```bash
+# Grid search simples (4 combinações)
+python src/train.py --grid-search \
+  --max-depth-range "4,6,8" \
+  --n-estimators-range "50,100"
+
+# Grid search completo (18 combinações)
+python src/train.py --grid-search \
+  --max-depth-range "4,6,8" \
+  --n-estimators-range "50,100,200" \
+  --learning-rate-range "0.05,0.1,0.2"
+
+# Grid search sem salvar (para experimentação)
+python src/train.py --grid-search \
+  --max-depth-range "4,6" \
+  --n-estimators-range "50,100" \
+  --no-save
+```
+
+O grid search:
+- Testa todas as combinações de parâmetros fornecidos
+- Avalia cada modelo no conjunto de teste
+- Exibe ranking dos top 5 resultados
+- Salva apenas o melhor modelo encontrado (se não usar `--no-save`)
+- Adiciona sufixo `_gridsearch` aos arquivos salvos
+
+### Modelos Salvos
+
+Os modelos treinados são salvos em `app/modelo/` com a data atual:
+
+```
+app/modelo/
+├── xgboost_pedra_classifier_2026-03-07.joblib
+├── label_encoder_2026-03-07.pkl
+└── feature_names_2026-03-07.pkl
+```
+
+Modelos de grid search têm sufixo adicional:
+```
+xgboost_pedra_classifier_2026-03-07_gridsearch.joblib
+```
+
 ## 🔮 Predição com Modelo Treinado
 
 ### Uso Básico
@@ -65,15 +157,15 @@ python src/predict.py --input dados.xlsx --models-path caminho/para/modelo
 
 ```
 src/
-├── predict.py              # Script de predição (novo!)
-├── train.py               # Treinamento do modelo
+├── train.py               # Treinamento com parâmetros configuráveis ✨
+├── predict.py             # Script de predição ✨
 ├── evaluate.py            # Avaliação do modelo
 ├── preprocessing.py       # Pré-processamento de dados
 ├── feature_engineering.py # Engenharia de features
-└── utils.py              # Funções utilitárias
+└── utils.py               # Funções utilitárias
 
 app/
-└── modelo/               # Artefatos do modelo treinado
+└── modelo/                # Artefatos dos modelos treinados
     ├── xgboost_pedra_classifier_*.joblib
     ├── label_encoder_*.pkl
     └── feature_names_*.pkl
@@ -86,15 +178,48 @@ app/
 pip install -r requirements.txt
 ```
 
-2. Fazer predições com dados de exemplo:
+2. Treinar modelo (opcional - já existe um pré-treinado):
+```bash
+# Com parâmetros padrão
+python src/train.py
+
+# Ou experimentar com diferentes parâmetros
+python src/train.py --max-depth 8 --n-estimators 200
+```
+
+3. Fazer predições com dados de exemplo:
 ```bash
 python src/predict.py --input src/bases/dados_pedras_baixo_erro.xlsx --output predictions.csv
 ```
 
-3. Visualizar resultados:
+4. Visualizar resultados:
 ```bash
 # No PowerShell
 Import-Csv predictions.csv | Select-Object -First 5 | Format-Table
 
 # Ou abrir o arquivo CSV no Excel
 ```
+
+## 💡 Dicas de Uso
+
+### Experimentando com Hiperparâmetros
+
+Para encontrar a melhor configuração do modelo:
+
+```bash
+# 1. Teste rápido com diferentes profundidades
+python src/train.py --grid-search --max-depth-range "4,6,8" --no-save
+
+# 2. Quando encontrar bons valores, treine e salve
+python src/train.py --max-depth 8 --n-estimators 200
+
+# 3. Use o modelo salvo para predições
+python src/predict.py --input novos_dados.xlsx
+```
+
+### Workflow Recomendado
+
+1. **Exploração**: Use `--grid-search` com `--no-save` para testar rapidamente
+2. **Treinamento Final**: Treine com os melhores parâmetros encontrados (sem `--no-save`)
+3. **Predição**: Use o modelo mais recente em `app/modelo/`
+4. **Iteração**: Se a acurácia for baixa, ajuste parâmetros e retreine

@@ -1,13 +1,29 @@
+# Processamento de dados
 pandas
-feast
-pyarrow
 openpyxl
+pyarrow
+
+# Machine Learning
 xgboost
 scikit-learn
 joblib
+
+# Feature Store
+feast
+
+# Tracking e visualização
 mlflow
 matplotlib
 seaborn
-mlflow
-matplotlib
-seaborn
+
+# FastAPI e API
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+pydantic-settings
+aiofiles
+jinja2
+
+# Utilitários
+python-dotenv
