@@ -1,0 +1,11 @@
+digest: 81241e68
+name: dataset
+profile: '{"num_rows": 384, "num_elements": 2688}'
+schema: '{"mlflow_colspec": [{"type": "long", "name": "IPV", "required": true}, {"type":
+  "long", "name": "IPS", "required": true}, {"type": "double", "name": "IAN", "required":
+  true}, {"type": "double", "name": "IEG", "required": true}, {"type": "long", "name":
+  "INDE", "required": true}, {"type": "double", "name": "IAA", "required": true},
+  {"type": "long", "name": "IDA", "required": true}]}'
+source: '{"tags": {"mlflow.user": "Paty", "mlflow.source.name": "C:\\Users\\Paty\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\pytest\\__main__.py",
+  "mlflow.source.type": "LOCAL"}}'
+source_type: code

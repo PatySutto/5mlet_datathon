@@ -3,11 +3,16 @@
 >
 pedraIdentificador Ãºnico da pedra"PEDRAJpedras_features
 Šâ™ÍØ–ÿïäš¯Í¨µÒ¦
-F
+j
+K
+student!Identificador Ãºnico do estudante"
+student_idJpedras_features
+šû±Íø–¿éÔ­²Íõ¯i
+E
 &
 __dummy"
-__dummy_idJpedras_features
-Šâ™Í¨‹ˆğäš¯Í€ÎÜ¦1"$13167aba-9d11-4aa8-b462-a93d819b3599*äš¯ÍØ‹¨©2¦
+__dummy_idJpedras_features
+Šâ™Í¨‹ˆğÔ­²Í˜ş¹i1"$99115cd7-1c32-4e0e-87dc-f24ff0c5adce*Ô­²Íà¨›l2¦
 …
 pedras_featurespedras_featurespedra"
 IPV"
@@ -18,7 +23,19 @@ __dummy_idJpedras_features
 IAA"
 IDA2€š:‡event_timestampZOMC:\Users\Paty\Documents\Codes\dt-2\src\bases\features\pedras_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢MC:\Users\Paty\Documents\Codes\dt-2\src\bases\features\pedras_features.parquet’Šâ™ÍÀß¥ê"Šâ™Íà±†ïb	
 PEDRA
-Šâ™ÍğĞéïŠâ™ÍğĞéïb™event_timestampZOMC:\Users\Paty\Documents\Codes\dt-2\src\bases\features\pedras_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢MC:\Users\Paty\Documents\Codes\dt-2\src\bases\features\pedras_features.parquetªpedras_features’Šâ™ÍÀß¥ê"Šâ™Íà±†ïz7
+Šâ™ÍğĞéïŠâ™ÍğĞéï2®
+
+student_featurespedras_featuresstudent"
+IPV"
+IPS"
+IAN"
+IEG"
+INDE"
+IAA"
+IDA2€š:‡event_timestampZOMC:\Users\Paty\Documents\Codes\dt-2\src\bases\features\pedras_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢MC:\Users\Paty\Documents\Codes\dt-2\src\bases\features\pedras_features.parquet’šû±Íğ¤øŞ"šû±Í £ÿèb
+
+student_id
+šû±ÍÈƒ¡éšû±ÍÈƒ¡éb™event_timestampZOMC:\Users\Paty\Documents\Codes\dt-2\src\bases\features\pedras_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢MC:\Users\Paty\Documents\Codes\dt-2\src\bases\features\pedras_features.parquetªpedras_features’Šâ™ÍÀß¥ê"Šâ™Íà±†ïz7
 pedras_features$2a6a07a7-8735-46e5-91a5-06cd2c7e1370Š1
 
 pedras_features

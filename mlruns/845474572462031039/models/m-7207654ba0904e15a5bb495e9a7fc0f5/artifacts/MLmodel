@@ -1,0 +1,32 @@
+artifact_path: file:C:/Users/Paty/Documents/Codes/dt-2/mlruns/845474572462031039/models/m-7207654ba0904e15a5bb495e9a7fc0f5/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.14.2
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: ubj
+    xgb_version: 3.2.0
+is_signature_from_type_hint: false
+mlflow_version: 3.10.1
+model_id: m-7207654ba0904e15a5bb495e9a7fc0f5
+model_size_bytes: 418176
+model_uuid: m-7207654ba0904e15a5bb495e9a7fc0f5
+prompts: null
+run_id: 258b27524bbe48589d99a092c7deb6f7
+signature:
+  inputs: '[{"type": "long", "name": "IPV", "required": true}, {"type": "long", "name":
+    "IPS", "required": true}, {"type": "double", "name": "IAN", "required": true},
+    {"type": "double", "name": "IEG", "required": true}, {"type": "long", "name":
+    "INDE", "required": true}, {"type": "double", "name": "IAA", "required": true},
+    {"type": "long", "name": "IDA", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-03-07 20:30:19.167863'

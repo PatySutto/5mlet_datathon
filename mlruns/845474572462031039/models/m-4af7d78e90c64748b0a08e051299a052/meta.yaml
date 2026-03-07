@@ -1,0 +1,10 @@
+artifact_location: file:C:/Users/Paty/Documents/Codes/dt-2/mlruns/845474572462031039/models/m-4af7d78e90c64748b0a08e051299a052/artifacts
+creation_timestamp: 1772915461023
+experiment_id: '845474572462031039'
+last_updated_timestamp: 1772915464654
+model_id: m-4af7d78e90c64748b0a08e051299a052
+model_type: null
+name: model
+source_run_id: c331b047a0bc4323ae1ac91f09bd8c84
+status: 2
+status_message: null

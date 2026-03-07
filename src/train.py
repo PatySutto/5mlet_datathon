@@ -27,17 +27,44 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import xgboost as xgb
 import joblib
 
+# Import Feast integration
+try:
+    from feature_engineering import get_features_for_training
+    FEAST_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️  Feast integration não disponível: {e}")
+    FEAST_AVAILABLE = False
 
-def load_data_for_training():
+
+def load_data_for_training(use_feast=False):
     """
     Carrega dados processados para treinamento.
     
-    - Lê o arquivo Excel mais recente da pasta bases/treated
-    - Separa features (X) da variável target (y)
+    Args:
+        use_feast (bool): Se True, carrega do Feast Feature Store.
+                         Se False, carrega do Excel (modo legado).
     
     Returns:
         tuple: (X, y) - Features e target
     """
+    if use_feast:
+        if not FEAST_AVAILABLE:
+            print("⚠️  Feast não disponível, usando modo legado (Excel)...")
+            use_feast = False
+        else:
+            print("Carregando dados via Feast Feature Store...")
+            try:
+                X, y = get_features_for_training()
+                print(f"Dados carregados via Feast: {len(X)} registros")
+                return X, y
+            except Exception as e:
+                print(f"⚠️  Erro ao carregar do Feast: {e}")
+                print("Usando modo legado (Excel)...")
+                use_feast = False
+    
+    # Modo legado: carrega do Excel
+    print("Carregando dados via Excel (modo legado)...")
+    
     # Caminho para a pasta treated
     treated_path = Path(__file__).parent / 'bases' / 'treated'
     
@@ -204,21 +231,21 @@ def save_model_artifacts(model, label_encoder, feature_names, save_enabled=True,
     models_path = Path(__file__).parent.parent / 'app' / 'modelo'
     models_path.mkdir(parents=True, exist_ok=True)
     
-    # Data de criação para o nome do arquivo
-    today = datetime.now().strftime('%Y-%m-%d')
+    # Timestamp completo para o nome do arquivo (data e hora)
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     
     # Salva o modelo XGBoost como .joblib
-    model_file = models_path / f'xgboost_pedra_classifier_{today}{suffix}.joblib'
+    model_file = models_path / f'xgboost_pedra_classifier_{timestamp}{suffix}.joblib'
     joblib.dump(model, model_file)
     print(f"\n💾 Modelo salvo em: {model_file}")
     
     # Salva o label encoder
-    encoder_file = models_path / f'label_encoder_{today}{suffix}.pkl'
+    encoder_file = models_path / f'label_encoder_{timestamp}{suffix}.pkl'
     joblib.dump(label_encoder, encoder_file)
     print(f"💾 Label Encoder salvo em: {encoder_file}")
     
     # Salva os nomes das features
-    features_file = models_path / f'feature_names_{today}{suffix}.pkl'
+    features_file = models_path / f'feature_names_{timestamp}{suffix}.pkl'
     joblib.dump(feature_names, features_file)
     print(f"💾 Feature names salvos em: {features_file}")
     
@@ -327,6 +354,12 @@ Exemplos de uso:
         '--grid-search',
         action='store_true',
         help='Ativar busca em grade para encontrar melhores hiperparâmetros'
+    )
+    exec_group.add_argument(
+        '--use-feast',
+        action='store_true',
+        default=False,
+        help='Usar Feast Feature Store para carregamento de dados (padrão: False, usa Excel)'
     )
     
     # Parâmetros para grid search
@@ -537,7 +570,11 @@ if __name__ == '__main__':
     
     # Carregar dados
     print("\n📂 Carregando dados...")
-    X, y = load_data_for_training()
+    if args.use_feast:
+        print("⚙️  Usando Feast Feature Store")
+    else:
+        print("⚙️  Usando modo legado (Excel)")
+    X, y = load_data_for_training(use_feast=args.use_feast)
     
     # Modo Grid Search
     if args.grid_search:

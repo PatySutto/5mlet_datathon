@@ -27,3 +27,9 @@ jinja2
 
 # Utilitários
 python-dotenv
+
+# Testes
+pytest==9.0.2
+pytest-cov==4.1.0
+pytest-asyncio==0.21.1
+httpx==0.26.0

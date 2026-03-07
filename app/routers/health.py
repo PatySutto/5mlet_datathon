@@ -45,13 +45,15 @@ async def list_models():
     )
     
     for model_file in model_files:
-        # Extrair data do nome do arquivo
-        # Formato: xgboost_pedra_classifier_YYYY-MM-DD.joblib
+        # Extrair timestamp do nome do arquivo
+        # Formato antigo: xgboost_pedra_classifier_YYYY-MM-DD.joblib
+        # Formato novo: xgboost_pedra_classifier_YYYY-MM-DD_HH-MM-SS.joblib
         model_name = model_file.stem  # Remove .joblib
-        parts = model_name.split('_')
         
-        if len(parts) >= 4:
-            model_id = parts[-1]  # Data no final
+        # Extrair timestamp: tudo após 'xgboost_pedra_classifier_'
+        prefix = 'xgboost_pedra_classifier_'
+        if model_name.startswith(prefix):
+            model_id = model_name[len(prefix):]  # Pega tudo após o prefixo
             
             # Construir info dos arquivos relacionados
             encoder_file = f"label_encoder_{model_id}.pkl"
@@ -70,7 +72,7 @@ async def list_models():
                             encoder=encoder_file,
                             features=features_file
                         ),
-                        created_at=model_id  # A data já está no model_id
+                        created_at=model_id  # O timestamp completo
                     )
                 )
     

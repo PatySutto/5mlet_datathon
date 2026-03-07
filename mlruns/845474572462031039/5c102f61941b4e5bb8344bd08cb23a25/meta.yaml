@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/Paty/Documents/Codes/dt-2/mlruns/845474572462031039/5c102f61941b4e5bb8344bd08cb23a25/artifacts
+end_time: 1772915279909
+entry_point_name: ''
+experiment_id: '845474572462031039'
+lifecycle_stage: active
+run_id: 5c102f61941b4e5bb8344bd08cb23a25
+run_name: sneaky-ant-76
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1772915275822
+status: 3
+tags: []
+user_id: Paty

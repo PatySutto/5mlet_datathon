@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/Paty/Documents/Codes/dt-2/mlruns/845474572462031039/a430e9007f954cd98ebfecbfd152e56b/artifacts
+end_time: 1772915418366
+entry_point_name: ''
+experiment_id: '845474572462031039'
+lifecycle_stage: active
+run_id: a430e9007f954cd98ebfecbfd152e56b
+run_name: evaluation_2026-03-07_17-30-13
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1772915413559
+status: 3
+tags: []
+user_id: Paty

@@ -138,17 +138,17 @@ function populateModelSelector(models) {
     // Clear and populate
     predictionElements.modelSelector.innerHTML = '';
     
-    // Add default option (latest model)
+    // Add default option (latest model) - shows full filename
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
-    defaultOption.textContent = `Mais Recente (${models[0].model_id})`;
+    defaultOption.textContent = `Mais Recente: ${models[0].files.model}`;
     predictionElements.modelSelector.appendChild(defaultOption);
     
-    // Add all models
+    // Add all models with full filename
     models.forEach(model => {
         const option = document.createElement('option');
         option.value = model.model_id;
-        option.textContent = `Modelo ${model.model_id} (${model.created_at})`;
+        option.textContent = model.files.model;
         predictionElements.modelSelector.appendChild(option);
     });
     

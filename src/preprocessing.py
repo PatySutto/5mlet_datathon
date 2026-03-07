@@ -57,6 +57,9 @@ def load_and_preprocess_data(save_output=True):
     # Reset do índice após remoção de linhas
     df = df.reset_index(drop=True)
     
+    # Adiciona student_id como entity key para o Feast Feature Store
+    df.insert(0, 'student_id', range(len(df)))
+    
     # Salva o arquivo processado em bases/treated
     if save_output:
         # Cria a pasta treated se não existir

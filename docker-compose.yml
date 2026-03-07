@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pedras-ml-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persistir dados do MLflow
+      - ./mlruns:/app/mlruns
+      - ./mlflow_artifacts:/app/mlflow_artifacts
+      # Persistir uploads e resultados
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      # Persistir modelos treinados
+      - ./app/modelo:/app/app/modelo
+      # Persistir dados do Feast
+      - ./src/data:/app/src/data
+      - ./src/bases:/app/src/bases
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MLFLOW_TRACKING_URI=file:///app/mlruns
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - ml-network
+
+  mlflow:
+    image: python:3.10-slim
+    container_name: pedras-mlflow-ui
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+      - ./mlflow_artifacts:/mlflow_artifacts
+    working_dir: /
+    command: >
+      sh -c "pip install mlflow &&
+             mlflow ui --host 0.0.0.0 --port 5000 --backend-store-uri file:///mlruns"
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - ml-network
+
+networks:
+  ml-network:
+    driver: bridge
+
+volumes:
+  mlruns:
+  mlflow_artifacts:
+  uploads:
+  results:
+  modelo:
+  feast_data:

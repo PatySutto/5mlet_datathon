@@ -63,7 +63,8 @@ async def train_model_pipeline(
         if progress_callback:
             progress_callback(30, "training", "Carregando dados de treinamento...")
         
-        X, y = load_data_for_training()
+        # Carregar dados usando Feast ou modo legado
+        X, y = load_data_for_training(use_feast=parameters.use_feast)
         
         # Capturar feature names para MLflow
         feature_names = X.columns.tolist()
