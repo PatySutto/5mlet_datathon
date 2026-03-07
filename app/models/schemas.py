@@ -221,5 +221,108 @@ class ModelInfo(BaseModel):
     created_at: str = Field(..., description="Data de criação")
 
 
+class UploadInfo(BaseModel):
+    """Informações de um arquivo de upload."""
+    file_id: str = Field(..., description="ID único do arquivo")
+    filename: str = Field(..., description="Nome original do arquivo")
+    size_bytes: int = Field(..., description="Tamanho em bytes")
+    uploaded_at: datetime = Field(..., description="Data/hora do upload")
+    has_treated_file: bool = Field(..., description="Se existe arquivo tratado correspondente")
+    is_being_used: bool = Field(False, description="Se está sendo usado por uma task ativa")
+
+
+class UploadListResponse(BaseModel):
+    """Resposta da listagem de uploads."""
+    uploads: List[UploadInfo] = Field(..., description="Lista de uploads")
+    total: int = Field(..., description="Total de uploads")
+    total_size_bytes: int = Field(..., description="Tamanho total em bytes")
+
+
+class DeleteUploadResponse(BaseModel):
+    """Resposta da exclusão de upload."""
+    success: bool = Field(..., description="Se a exclusão foi bem-sucedida")
+    message: str = Field(..., description="Mensagem descritiva")
+    files_deleted: List[str] = Field(..., description="Lista de arquivos excluídos")
+
+
+class PredictionInput(BaseModel):
+    """Input para predição de pedra."""
+    IPV: float = Field(..., description="Índice de Ponto de Virada")
+    IPS: float = Field(..., description="Índice Psicossocial")
+    IAN: float = Field(..., description="Índice de Adequação ao Nível")
+    IEG: float = Field(..., description="Índice de Engajamento")
+    INDE: float = Field(..., description="Índice de Desenvolvimento")
+    IAA: float = Field(..., description="Índice de Autoavaliação")
+    IDA: float = Field(..., description="Índice de Desempenho Acadêmico")
+    model_id: Optional[str] = Field(None, description="ID do modelo específico (padrão: mais recente)")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "IPV": 5.2,
+                "IPS": 7.8,
+                "IAN": 6.5,
+                "IEG": 8.1,
+                "INDE": 7.0,
+                "IAA": 6.8,
+                "IDA": 7.5,
+                "model_id": "2026-03-07"
+            }
+        }
+
+
+class PredictionResult(BaseModel):
+    """Resultado da predição."""
+    pedra_predita: str = Field(..., description="Classe de pedra predita")
+    confianca: float = Field(..., ge=0, le=1, description="Confiança da predição (0-1)")
+    probabilidades: Dict[str, float] = Field(..., description="Probabilidades por classe")
+    model_used: str = Field(..., description="ID do modelo utilizado")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "pedra_predita": "Rubi",
+                "confianca": 0.875,
+                "probabilidades": {
+                    "Rubi": 0.875,
+                    "Safira": 0.082,
+                    "Topazio": 0.023,
+                    "Esmeralda": 0.012,
+                    "Ametista": 0.005,
+                    "Quartzo": 0.002,
+                    "Turmalina": 0.001,
+                    "Onix": 0.000
+                },
+                "model_used": "2026-03-07"
+            }
+        }
+
+
+class BatchPredictionResponse(BaseModel):
+    """Resposta de predição em batch."""
+    status: str = Field(..., description="Status da operação")
+    message: str = Field(..., description="Mensagem descritiva")
+    total_records: int = Field(..., description="Total de registros processados")
+    successful_predictions: int = Field(..., description="Predições bem-sucedidas")
+    failed_predictions: int = Field(..., description="Predições falhadas")
+    model_used: str = Field(..., description="ID do modelo utilizado")
+    download_url: str = Field(..., description="URL para download do arquivo de resultado")
+    warnings: List[str] = Field(default_factory=list, description="Avisos durante processamento")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "status": "success",
+                "message": "Predições concluídas com sucesso",
+                "total_records": 48,
+                "successful_predictions": 45,
+                "failed_predictions": 3,
+                "model_used": "2026-03-07",
+                "download_url": "/api/prediction/download/batch_abc123.xlsx",
+                "warnings": ["3 linhas não puderam ser processadas"]
+            }
+        }
+
+
 # Resolver forward references
 TrainingStatus.model_rebuild()

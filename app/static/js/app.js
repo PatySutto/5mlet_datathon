@@ -142,6 +142,7 @@ async function uploadFile(file) {
         state.fileId = data.file_id;
         showValidationResults(data.validation);
         elements.parametersSection.style.display = 'block';
+        elements.startTrainingBtn.disabled = false;
         addLog('✅ Arquivo validado com sucesso', 'success');
 
     } catch (error) {

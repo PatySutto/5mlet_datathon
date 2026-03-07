@@ -169,8 +169,11 @@ def evaluate_with_mlflow(model, label_encoder, feature_names, X_test, y_test):
     Returns:
         dict: Dicionário com métricas de avaliação
     """
-    # Configura MLFlow
-    mlflow.set_tracking_uri("file:./mlruns")
+    # Configura MLFlow com caminho absoluto
+    from pathlib import Path
+    project_root = Path(__file__).parent.parent
+    mlruns_path = project_root / "mlruns"
+    mlflow.set_tracking_uri(f"file:{mlruns_path}")
     mlflow.set_experiment("pedras_classification")
     
     # Habilita auto-logging do XGBoost
@@ -226,11 +229,20 @@ def evaluate_with_mlflow(model, label_encoder, feature_names, X_test, y_test):
         recall_per_class = recall_score(y_test, y_pred, average=None, zero_division=0)
         f1_per_class = f1_score(y_test, y_pred, average=None, zero_division=0)
         
+        # Construir dicionário de métricas por classe
+        per_class_metrics = {}
         for i, class_name in enumerate(label_encoder.classes_):
             mlflow.log_metric(f"precision_{class_name}", precision_per_class[i])
             mlflow.log_metric(f"recall_{class_name}", recall_per_class[i])
             mlflow.log_metric(f"f1_{class_name}", f1_per_class[i])
             print(f"  {class_name}: P={precision_per_class[i]:.3f}, R={recall_per_class[i]:.3f}, F1={f1_per_class[i]:.3f}")
+            
+            per_class_metrics[class_name] = {
+                'precision': float(precision_per_class[i]),
+                'recall': float(recall_per_class[i]),
+                'f1-score': float(f1_per_class[i]),
+                'support': int(np.sum(y_test == i))
+            }
         
         # Cria pasta temporária para artefatos
         artifacts_path = Path(__file__).parent.parent / 'mlflow_artifacts'
@@ -276,6 +288,7 @@ def evaluate_with_mlflow(model, label_encoder, feature_names, X_test, y_test):
             'precision_weighted': precision_weighted,
             'recall_weighted': recall_weighted,
             'f1_weighted': f1_weighted,
+            'per_class_metrics': per_class_metrics,
             'run_id': run_id
         }
         

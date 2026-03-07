@@ -10,7 +10,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from pathlib import Path
 
 from app.config import settings
-from app.routers import training, health
+from app.routers import training, health, prediction
 from app.middleware.error_handler import (
     http_exception_handler,
     validation_exception_handler,
@@ -55,6 +55,7 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 # Incluir routers
 app.include_router(health.router)
 app.include_router(training.router)
+app.include_router(prediction.router)
 
 
 @app.get("/", response_class=HTMLResponse)

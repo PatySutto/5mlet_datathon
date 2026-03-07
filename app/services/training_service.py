@@ -12,10 +12,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 from src.train import (
     load_data_for_training,
     train_model,
-    evaluate_model,
     save_model_artifacts,
     print_feature_importance
 )
+from src.evaluate import evaluate_with_mlflow
 from app.models.schemas import (
     TrainingParameters,
     TrainingResult,
@@ -65,6 +65,9 @@ async def train_model_pipeline(
         
         X, y = load_data_for_training()
         
+        # Capturar feature names para MLflow
+        feature_names = X.columns.tolist()
+        
         # Stage 3: Treinar modelo
         if progress_callback:
             progress_callback(40, "training", f"Treinando modelo com {len(X)} registros...")
@@ -83,23 +86,23 @@ async def train_model_pipeline(
         if progress_callback:
             progress_callback(70, "evaluation", "Avaliando performance do modelo...")
         
-        metrics_dict = evaluate_model(model, encoder, X_test, y_test)
+        metrics_dict = evaluate_with_mlflow(model, encoder, feature_names, X_test, y_test)
         
         # Extrair métricas gerais
         training_metrics = TrainingMetrics(
             accuracy=metrics_dict['accuracy'],
-            precision_macro=metrics_dict['classification_report']['macro avg']['precision'],
-            recall_macro=metrics_dict['classification_report']['macro avg']['recall'],
-            f1_macro=metrics_dict['classification_report']['macro avg']['f1-score'],
-            precision_weighted=metrics_dict['classification_report']['weighted avg']['precision'],
-            recall_weighted=metrics_dict['classification_report']['weighted avg']['recall'],
-            f1_weighted=metrics_dict['classification_report']['weighted avg']['f1-score']
+            precision_macro=metrics_dict['precision_macro'],
+            recall_macro=metrics_dict['recall_macro'],
+            f1_macro=metrics_dict['f1_macro'],
+            precision_weighted=metrics_dict['precision_weighted'],
+            recall_weighted=metrics_dict['recall_weighted'],
+            f1_weighted=metrics_dict['f1_weighted']
         )
         
         # Extrair métricas por classe
         per_class_metrics = {}
         for class_name in encoder.classes_:
-            class_data = metrics_dict['classification_report'].get(class_name, {})
+            class_data = metrics_dict['per_class_metrics'].get(class_name, {})
             if class_data:
                 per_class_metrics[class_name] = ClassMetrics(
                     precision=class_data.get('precision', 0.0),

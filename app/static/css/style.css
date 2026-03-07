@@ -44,6 +44,48 @@ body {
     position: relative;
 }
 
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header-title {
+    flex: 1;
+    text-align: center;
+    min-width: 300px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.mlflow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #0194f3 0%, #0078d4 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(1, 148, 243, 0.3);
+    white-space: nowrap;
+}
+
+.mlflow-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(1, 148, 243, 0.5);
+    background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+}
+
 .header h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
@@ -567,6 +609,365 @@ body {
     word-break: break-word;
 }
 
+/* Tab Navigation */
+.app-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.tab-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.75rem 2rem;
+    border-radius: 8px 8px 0 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    background: var(--card-bg);
+    color: var(--primary-color);
+    border-color: var(--card-bg);
+    border-bottom-color: var(--card-bg);
+}
+
+/* Screen Container */
+.screen {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Model Selector */
+.model-selector-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.model-selector-group label {
+    font-weight: 600;
+    color: var(--text-color);
+    min-width: 80px;
+}
+
+.model-select {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.model-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Feature Input Grid */
+.feature-input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.feature-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.feature-group label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.feature-label {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.feature-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.feature-group input {
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.feature-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.feature-group input:invalid {
+    border-color: var(--error-color);
+}
+
+/* Prediction Results */
+.prediction-results {
+    margin-top: 2rem;
+}
+
+.predicted-stone {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.stone-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stone-name {
+    display: block;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Confidence Display */
+.confidence-display {
+    margin-bottom: 2rem;
+}
+
+.confidence-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.confidence-value {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+}
+
+.confidence-bar {
+    width: 100%;
+    height: 24px;
+    background: var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+    border-radius: 12px;
+}
+
+.confidence-fill.high {
+    background: linear-gradient(90deg, var(--success-color), #059669);
+}
+
+.confidence-fill.medium {
+    background: linear-gradient(90deg, var(--warning-color), #d97706);
+}
+
+.confidence-fill.low {
+    background: linear-gradient(90deg, var(--error-color), #dc2626);
+}
+
+/* Probabilities Section */
+.probabilities-section {
+    margin-bottom: 2rem;
+}
+
+.probabilities-section h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.probability-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.probability-bar-container {
+    display: grid;
+    grid-template-columns: 120px 1fr 80px;
+    align-items: center;
+    gap: 1rem;
+}
+
+.probability-label {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.probability-bar-wrapper {
+    background: var(--border-color);
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.probability-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.probability-value {
+    text-align: right;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* Prediction Info */
+.prediction-info {
+    background: var(--bg-color);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.prediction-info p {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+}
+
+.prediction-info strong {
+    color: var(--text-color);
+}
+
+/* Batch Prediction Styles */
+.batch-upload-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 1rem 0;
+    background: var(--bg-color);
+}
+
+.batch-upload-zone:hover,
+.batch-upload-zone.drag-over {
+    border-color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.batch-file-preview {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg-color);
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.batch-progress {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--bg-color);
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.batch-progress p {
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.batch-result {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+}
+
+.batch-result h4 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.batch-stats {
+    margin: 1rem 0;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.batch-stats p {
+    margin: 0.5rem 0;
+}
+
+.btn-success {
+    background: white;
+    color: var(--success-color);
+    border: 2px solid white;
+    margin-top: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+}
+
+.btn-success:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        opacity: 0.6; 
+    }
+    50% { 
+        opacity: 1; 
+    }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     body {
@@ -587,5 +988,28 @@ body {
     
     .results-summary {
         grid-template-columns: 1fr;
+    }
+    
+    .app-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .tab-btn {
+        border-radius: 8px;
+        width: 100%;
+    }
+    
+    .feature-input-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .probability-bar-container {
+        grid-template-columns: 100px 1fr 60px;
+        gap: 0.5rem;
+    }
+    
+    .stone-name {
+        font-size: 2rem;
     }
 }
