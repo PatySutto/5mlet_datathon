@@ -1,3 +1,5 @@
+gunicorn
+
 # Processamento de dados
 pandas
 openpyxl
