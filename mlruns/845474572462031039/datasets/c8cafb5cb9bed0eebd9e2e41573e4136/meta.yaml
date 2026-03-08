@@ -1,9 +1,0 @@
-digest: 9c14d47f
-name: dataset
-profile: '{"features_shape": [1534, 7], "features_size": 10738, "features_nbytes":
-  42952}'
-schema: '{"mlflow_tensorspec": {"features": "[{\"type\": \"tensor\", \"tensor-spec\":
-  {\"dtype\": \"float32\", \"shape\": [-1, 7]}}]", "targets": null}}'
-source: '{"tags": {"mlflow.user": "Paty", "mlflow.source.name": "C:\\Users\\Paty\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\pytest\\__main__.py",
-  "mlflow.source.type": "LOCAL"}}'
-source_type: code
