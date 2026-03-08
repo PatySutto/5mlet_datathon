@@ -6,7 +6,7 @@ Sistema de Machine Learning para classificação de alunos em categorias (pedras
 
 ## 📋 Requisitos
 
-- **Python 3.10+**
+- **Python 3.14+**
 - Docker Desktop (opcional, para execução em container)
 
 ## 📂 Estrutura do Projeto
@@ -135,11 +135,28 @@ Executar testes automatizados:
 pytest
 
 # Com cobertura
-pytest --cov=app --cov=src
+pytest --cov=app --cov=src --cov-report=term-missing
 
-# Apenas testes de API
-pytest tests/test_api.py -v
+# Apenas testes unitários
+pytest tests/test_preprocessing.py tests/test_model.py -v
 ```
+
+## 🔄 CI/CD
+
+O projeto usa **GitHub Actions** para integração e entrega contínuas.
+
+### Pipeline Automatizado
+Executa automaticamente em cada push ou pull request:
+- ✅ **Testes**: Pytest com cobertura de código
+- ✅ **Qualidade**: Análise de código com flake8
+- ✅ **Relatórios**: Upload automático para Codecov
+
+### Status do Build
+[![CI/CD Pipeline](https://github.com/USERNAME/dt-2/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/dt-2/actions/workflows/ci.yml)
+
+**Nota:** Substitua `USERNAME` pelo seu usuário do GitHub para ativar o badge.
+
+Consulte [CI_CD_GUIDE.md](CI_CD_GUIDE.md) para configuração detalhada.
 
 ## 📊 Features do Modelo
 
