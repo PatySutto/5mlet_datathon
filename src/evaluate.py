@@ -16,6 +16,35 @@ from sklearn.metrics import (
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
+import re
+
+
+def sanitize_metric_name(name):
+    """
+    Sanitiza o nome de uma métrica para ser compatível com MLflow.
+    MLflow permite apenas: alphanumerics, underscores (_), dashes (-), 
+    periods (.), spaces ( ), colon(:) e slashes (/).
+    
+    Args:
+        name (str): Nome original da classe/métrica
+        
+    Returns:
+        str: Nome sanitizado compatível com MLflow
+        
+    Examples:
+        >>> sanitize_metric_name("#NULO!")
+        'NULO'
+        >>> sanitize_metric_name("Class@123")
+        'Class_123'
+    """
+    # Define os caracteres permitidos pelo MLflow
+    # Mantém apenas: alphanumerics, _, -, ., espaço, :, /
+    sanitized = re.sub(r'[^a-zA-Z0-9_\-.: /]', '_', str(name))
+    # Remove underscores duplicados
+    sanitized = re.sub(r'_+', '_', sanitized)
+    # Remove underscores do início e fim
+    sanitized = sanitized.strip('_')
+    return sanitized
 
 
 def load_latest_model():
@@ -232,11 +261,14 @@ def evaluate_with_mlflow(model, label_encoder, feature_names, X_test, y_test):
         # Construir dicionário de métricas por classe
         per_class_metrics = {}
         for i, class_name in enumerate(label_encoder.classes_):
-            mlflow.log_metric(f"precision_{class_name}", precision_per_class[i])
-            mlflow.log_metric(f"recall_{class_name}", recall_per_class[i])
-            mlflow.log_metric(f"f1_{class_name}", f1_per_class[i])
+            # Sanitiza o nome da classe para uso em métricas do MLflow
+            sanitized_name = sanitize_metric_name(class_name)
+            mlflow.log_metric(f"precision_{sanitized_name}", precision_per_class[i])
+            mlflow.log_metric(f"recall_{sanitized_name}", recall_per_class[i])
+            mlflow.log_metric(f"f1_{sanitized_name}", f1_per_class[i])
             print(f"  {class_name}: P={precision_per_class[i]:.3f}, R={recall_per_class[i]:.3f}, F1={f1_per_class[i]:.3f}")
             
+            # Usa o nome original da classe no dicionário de métricas (para API)
             per_class_metrics[class_name] = {
                 'precision': float(precision_per_class[i]),
                 'recall': float(recall_per_class[i]),

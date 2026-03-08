@@ -21,13 +21,6 @@ O workflow está em [.github/workflows/ci.yml](.github/workflows/ci.yml) e execu
 - Analisa qualidade de código
 - Executa em paralelo com os testes
 
-### 3. **Docker**
-- Executa apenas após testes passarem
-- Apenas em push para `main`/`master`
-- Builda imagem Docker
-- Testa inicialização do container
-- Verifica health endpoint
-
 ## 🚀 Como Usar
 
 ### Primeira vez (configuração no GitHub)

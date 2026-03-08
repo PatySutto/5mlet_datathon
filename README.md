@@ -1,6 +1,6 @@
 # 🔮 Datathon Passos Mágicos - Classificação de Pedras
 
-[![CI/CD Pipeline](https://github.com/USERNAME/dt-2/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/dt-2/actions/workflows/ci.yml)
+Render: https://fivemlet-datathon-fkk6.onrender.com/
 
 Sistema de Machine Learning para classificação de alunos em categorias (pedras preciosas) baseado em índices de desempenho educacional usando XGBoost, FastAPI e Feast Feature Store.
 
