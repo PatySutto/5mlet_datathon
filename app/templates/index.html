@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} - Treinamento do Modelo</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>🎯 Sistema de Classificação de Pedras</h1>
+                    <p class="subtitle">Treinamento e Predição - Sistema Passos Mágicos</p>
+                </div>
+                <div class="header-actions">
+                    <a href="http://localhost:5000" target="_blank" class="mlflow-link" 
+                       title="Abrir MLflow UI (certifique-se de que 'mlflow ui' está rodando)">
+                        📈 MLflow UI
+                    </a>
+                    <span class="version">v{{ version }}</span>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <nav class="app-tabs">
+                <button class="tab-btn active" data-screen="training">
+                    📚 Treinamento
+                </button>
+                <button class="tab-btn" data-screen="prediction">
+                    🔮 Predição
+                </button>
+            </nav>
+        </header>
+
+        <!-- Training Screen -->
+        <div class="screen" id="trainingScreen">
+
+        <!-- Upload Section -->
+        <section class="card upload-section">
+            <h2>📁 Upload de Dados</h2>
+            <p class="info-text">
+                Faça upload de um arquivo Excel (.xlsx ou .xls) contendo as colunas obrigatórias:
+                <br><strong>PEDRA, IPV, IPS, IAN, IEG, INDE, IAA, IDA</strong>
+            </p>
+
+            <!-- Drag and Drop Area -->
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-content">
+                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p class="drop-text">Arraste o arquivo aqui ou <span class="browse-link">clique para selecionar</span></p>
+                    <p class="drop-hint">Tamanho máximo: 10MB</p>
+                </div>
+                <input type="file" id="fileInput" accept=".xlsx,.xls" hidden>
+            </div>
+
+            <!-- File Preview -->
+            <div class="file-preview" id="filePreview" style="display: none;">
+                <div class="file-info">
+                    <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <div class="file-details">
+                        <p class="file-name" id="fileName"></p>
+                        <p class="file-size" id="fileSize"></p>
+                    </div>
+                    <button class="remove-file-btn" id="removeFileBtn" type="button">✕</button>
+                </div>
+            </div>
+
+            <!-- Validation Results -->
+            <div class="validation-results" id="validationResults" style="display: none;">
+                <h3>✅ Validação Concluída</h3>
+                <div class="validation-stats">
+                    <div class="stat">
+                        <span class="stat-label">Total:</span>
+                        <span class="stat-value" id="totalRecords">-</span>
+                    </div>
+                    <div class="stat success">
+                        <span class="stat-label">Válidos:</span>
+                        <span class="stat-value" id="validRecords">-</span>
+                    </div>
+                    <div class="stat error">
+                        <span class="stat-label">Rejeitados:</span>
+                        <span class="stat-value" id="rejectedRecords">-</span>
+                    </div>
+                </div>
+                <div class="validation-warnings" id="validationWarnings"></div>
+            </div>
+        </section>
+
+        <!-- Training Parameters -->
+        <section class="card parameters-section" id="parametersSection" style="display: none;">
+            <h2>⚙️ Parâmetros de Treinamento</h2>
+            <p class="info-text">Configure os hiperparâmetros do modelo XGBoost (opcional)</p>
+            
+            <div class="parameters-grid">
+                <div class="param-group">
+                    <label for="maxDepth">Profundidade Máxima (max_depth)</label>
+                    <input type="number" id="maxDepth" min="3" max="10" value="6">
+                    <span class="param-hint">Range: 3-10</span>
+                </div>
+                
+                <div class="param-group">
+                    <label for="nEstimators">Número de Árvores (n_estimators)</label>
+                    <input type="number" id="nEstimators" min="50" max="500" step="10" value="100">
+                    <span class="param-hint">Range: 50-500</span>
+                </div>
+                
+                <div class="param-group">
+                    <label for="learningRate">Taxa de Aprendizado (learning_rate)</label>
+                    <input type="number" id="learningRate" min="0.01" max="0.3" step="0.01" value="0.1">
+                    <span class="param-hint">Range: 0.01-0.3</span>
+                </div>
+                
+                <div class="param-group">
+                    <label for="testSize">Tamanho do Test Set (test_size)</label>
+                    <input type="number" id="testSize" min="0.1" max="0.3" step="0.05" value="0.2">
+                    <span class="param-hint">Range: 0.1-0.3</span>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="useFeast" checked>
+                    <span>Utilizar Feast Feature Store</span>
+                </label>
+            </div>
+
+            <button class="btn btn-primary" id="startTrainingBtn">
+                🚀 Iniciar Treinamento
+            </button>
+        </section>
+
+        <!-- Training Progress -->
+        <section class="card progress-section" id="progressSection" style="display: none;">
+            <h2>📊 Progresso do Treinamento</h2>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+
+            <div class="stage-indicator" id="stageIndicator">
+                <div class="stage" data-stage="preprocessing">Preprocessing</div>
+                <div class="stage" data-stage="feature_engineering">Feature Engineering</div>
+                <div class="stage" data-stage="training">Training</div>
+                <div class="stage" data-stage="evaluation">Evaluation</div>
+                <div class="stage" data-stage="saving">Saving</div>
+                <div class="stage" data-stage="completed">Completed</div>
+            </div>
+
+            <div class="log-container">
+                <h3>📝 Log</h3>
+                <div class="log-content" id="logContent"></div>
+            </div>
+        </section>
+
+        <!-- Training Results -->
+        <section class="card results-section" id="resultsSection" style="display: none;">
+            <h2>🎉 Treinamento Concluído!</h2>
+            
+            <div class="results-summary">
+                <div class="metric-card">
+                    <span class="metric-label">Acurácia</span>
+                    <span class="metric-value" id="accuracyValue">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Precision (Macro)</span>
+                    <span class="metric-value" id="precisionValue">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Recall (Macro)</span>
+                    <span class="metric-value" id="recallValue">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">F1-Score (Macro)</span>
+                    <span class="metric-value" id="f1Value">-</span>
+                </div>
+            </div>
+
+            <div class="feature-importance">
+                <h3>📈 Importância das Features</h3>
+                <div class="importance-bars" id="importanceBars"></div>
+            </div>
+
+            <div class="model-info">
+                <h3>💾 Modelo Salvo</h3>
+                <p><strong>ID do Modelo:</strong> <span id="modelId">-</span></p>
+                <p><strong>Duração:</strong> <span id="trainingDuration">-</span></p>
+                <p><strong>Arquivo:</strong> <code id="modelFile">-</code></p>
+            </div>
+
+            <button class="btn btn-secondary" id="newTrainingBtn">
+                🔄 Novo Treinamento
+            </button>
+        </section>
+
+        <!-- Error Section -->
+        <section class="card error-section" id="errorSection" style="display: none;">
+            <h2>❌ Erro no Treinamento</h2>
+            <div class="error-content" id="errorContent"></div>
+            <button class="btn btn-secondary" id="retryBtn">
+                🔄 Tentar Novamente
+            </button>
+        </section>
+        </div>
+        <!-- End Training Screen -->
+
+        <!-- Prediction Screen -->
+        <div class="screen" id="predictionScreen" style="display: none;">
+            
+            <!-- Model Selection -->
+            <section class="card">
+                <h2>🔮 Predição de Pedras</h2>
+                <p class="info-text">
+                    Selecione um modelo treinado e insira os valores das 7 features para obter a predição.
+                </p>
+                
+                <div class="model-selector-group">
+                    <label for="modelSelector">Modelo:</label>
+                    <select id="modelSelector" class="model-select">
+                        <option value="">Carregando modelos...</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Batch Prediction Section -->
+            <section class="card">
+                <h3>📊 Predição em Batch (Upload Excel)</h3>
+                <p class="info-text">
+                    Faça upload de um arquivo Excel contendo as colunas:<br>
+                    <strong>IPV, IPS, IAN, IEG, INDE, IAA, IDA</strong><br>
+                    O sistema retornará o mesmo arquivo com a coluna <strong>PEDRA</strong> adicionada.
+                </p>
+                
+                <div class="batch-upload-zone" id="batchUploadZone">
+                    <div class="drop-zone-content">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p class="drop-text">Arraste o arquivo Excel aqui ou <span class="browse-link">clique para selecionar</span></p>
+                        <p class="drop-hint">Formato: .xlsx ou .xls</p>
+                    </div>
+                    <input type="file" id="batchFileInput" accept=".xlsx,.xls" hidden>
+                </div>
+                
+                <div class="batch-file-preview" id="batchFilePreview" style="display: none;">
+                    <div class="file-info">
+                        <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <div class="file-details">
+                            <p class="file-name" id="batchFileName"></p>
+                            <p class="file-size" id="batchFileSize"></p>
+                        </div>
+                        <button class="remove-file-btn" id="removeBatchFileBtn" type="button">✕</button>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" id="predictBatchBtn" style="display: none;">
+                    📊 Processar Arquivo
+                </button>
+                
+                <div class="batch-progress" id="batchProgress" style="display: none;">
+                    <p>⏳ Processando predições...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%; animation: pulse 1.5s ease-in-out infinite;"></div>
+                    </div>
+                </div>
+                
+                <div class="batch-result" id="batchResult" style="display: none;">
+                    <h4>✅ Processamento Concluído!</h4>
+                    <div class="batch-stats">
+                        <p><strong>Total de registros:</strong> <span id="batchTotal">-</span></p>
+                        <p><strong>Predições bem-sucedidas:</strong> <span id="batchSuccess">-</span></p>
+                        <p><strong>Modelo utilizado:</strong> <span id="batchModel">-</span></p>
+                    </div>
+                    <a class="btn btn-success" id="downloadBatchBtn" download>
+                        ⬇️ Download do Resultado
+                    </a>
+                </div>
+            </section>
+
+            <!-- Feature Input Form -->
+            <section class="card">
+                <h3>📊 Features de Entrada</h3>
+                <p class="info-text">Insira os valores dos 7 índices para realizar a predição:</p>
+                
+                <div class="feature-input-grid">
+                    <div class="feature-group">
+                        <label for="ipv">
+                            <span class="feature-label">IPV</span>
+                            <span class="feature-description">Índice de Ponto de Virada</span>
+                        </label>
+                        <input type="number" id="ipv" step="0.01" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="feature-group">
+                        <label for="ips">
+                            <span class="feature-label">IPS</span>
+                            <span class="feature-description">Índice Psicossocial</span>
+                        </label>
+                        <input type="number" id="ips" step="0.01" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="feature-group">
+                        <label for="ian">
+                            <span class="feature-label">IAN</span>
+                            <span class="feature-description">Índice de Adequação ao Nível</span>
+                        </label>
+                        <input type="number" id="ian" step="0.01" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="feature-group">
+                        <label for="ieg">
+                            <span class="feature-label">IEG</span>
+                            <span class="feature-description">Índice de Engajamento</span>
+                        </label>
+                        <input type="number" id="ieg" step="0.01" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="feature-group">
+                        <label for="inde">
+                            <span class="feature-label">INDE</span>
+                            <span class="feature-description">Índice de Desenvolvimento</span>
+                        </label>
+                        <input type="number" id="inde" step="0.01" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="feature-group">
+                        <label for="iaa">
+                            <span class="feature-label">IAA</span>
+                            <span class="feature-description">Índice de Autoavaliação</span>
+                        </label>
+                        <input type="number" id="iaa" step="0.01" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="feature-group">
+                        <label for="ida">
+                            <span class="feature-label">IDA</span>
+                            <span class="feature-description">Índice de Desempenho Acadêmico</span>
+                        </label>
+                        <input type="number" id="ida" step="0.01" placeholder="0.00" required>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="predictBtn">
+                    🔮 Realizar Predição
+                </button>
+            </section>
+
+            <!-- Prediction Results -->
+            <section class="card prediction-results" id="predictionResults" style="display: none;">
+                <h2>✨ Resultado da Predição</h2>
+                
+                <div class="predicted-stone">
+                    <span class="stone-label">Pedra Predita:</span>
+                    <span class="stone-name" id="predictedStone">-</span>
+                </div>
+                
+                <div class="confidence-display">
+                    <span class="confidence-label">Confiança:</span>
+                    <span class="confidence-value" id="confidenceValue">-</span>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill"></div>
+                    </div>
+                </div>
+
+                <div class="probabilities-section">
+                    <h3>📊 Probabilidades por Classe</h3>
+                    <div class="probability-bars" id="probabilityBars"></div>
+                </div>
+
+                <div class="prediction-info">
+                    <p><strong>Modelo Utilizado:</strong> <span id="modelUsed">-</span></p>
+                </div>
+
+                <button class="btn btn-secondary" id="newPredictionBtn">
+                    🔄 Nova Predição
+                </button>
+            </section>
+
+            <!-- Prediction Error -->
+            <section class="card error-section" id="predictionError" style="display: none;">
+                <h2>❌ Erro na Predição</h2>
+                <div class="error-content" id="predictionErrorContent"></div>
+                <button class="btn btn-secondary" id="retryPredictionBtn">
+                    🔄 Tentar Novamente
+                </button>
+            </section>
+            
+        </div>
+        <!-- End Prediction Screen -->
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/prediction.js"></script>
+</body>
+</html>

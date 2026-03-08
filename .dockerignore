@@ -1,11 +1,12 @@
 # Python
-venv/
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
 env/
+venv/
+ENV/
 build/
 develop-eggs/
 dist/
@@ -18,46 +19,66 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
 *.egg-info/
 .installed.cfg
 *.egg
 
-# IDEs
+# Virtual environments
+venv/
+ENV/
+env/
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Pytest
+# Git
+.git/
+.gitignore
+
+# Testing
 .pytest_cache/
 .coverage
 htmlcov/
-coverage.xml
 *.cover
 
-# ML artifacts
+# MLflow
 mlruns/
 mlflow_artifacts/
-*.joblib
-*.pkl
-app/modelo/*.joblib
-app/modelo/*.pkl
 
 # Data
 uploads/
 results/
 temp/
-*.db
+src/bases/treated/
+src/bases/features/
+src/data/
+
+# Notebooks
+notebooks/
+*.ipynb
+.ipynb_checkpoints/
+
+# Documentation
+*.md
+docs/
 
 # OS
 .DS_Store
 Thumbs.db
 
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
 # Logs
 *.log
-
-# Environment
-.env
-.env.local
+logs/
