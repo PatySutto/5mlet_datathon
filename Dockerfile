@@ -1,6 +1,6 @@
 # Dockerfile multi-stage para o projeto de ML Engineering
 # Stage 1: Builder - instala dependências
-FROM python:3.10-slim as builder
+FROM python:3.14-slim as builder
 
 # Instala dependências do sistema necessárias para compilação
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime - imagem final mais leve
-FROM python:3.10-slim
+FROM python:3.14-slim
 
 # Metadados da imagem
 LABEL maintainer="Datathon Team"
@@ -38,7 +38,7 @@ RUN useradd -m -u 1000 appuser
 WORKDIR /app
 
 # Copia dependências instaladas do builder
-COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copia código da aplicação

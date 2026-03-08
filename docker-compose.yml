@@ -34,7 +34,7 @@ services:
       - ml-network
 
   mlflow:
-    image: python:3.10-slim
+    image: python:3.14-slim
     container_name: pedras-mlflow-ui
     ports:
       - "5000:5000"

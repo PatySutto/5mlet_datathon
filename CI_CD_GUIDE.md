@@ -139,7 +139,7 @@ O workflow gera relatórios de cobertura automaticamente. Para integrar com Code
 ### Python version not found
 
 **Erro:** `Version 3.14 with arch x64 not found`
-**Solução:** Já corrigido para Python 3.10 no workflow
+**Solução:** Python 3.14 configurado no workflow
 
 ## 📚 Recursos
 
