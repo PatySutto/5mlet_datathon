@@ -85,6 +85,52 @@ async def startup_event():
     print(f"🤖 Model directory: {settings.MODEL_DIR}")
     print(f"📊 Docs available at: http://{settings.HOST}:{settings.PORT}/docs")
     print("=" * 70)
+    
+    # Inicializar dados processados se não existirem
+    await initialize_training_data()
+
+
+async def initialize_training_data():
+    """
+    Gera dados processados automaticamente se não existirem.
+    Executado no startup para garantir que treinamento funcione.
+    """
+    try:
+        from pathlib import Path
+        import sys
+        
+        # Adicionar src ao path
+        sys.path.insert(0, str(settings.BASE_DIR / "src"))
+        
+        from preprocessing import load_and_preprocess_data
+        
+        treated_path = settings.TREATED_DATA_DIR
+        excel_files = list(treated_path.glob("*.xlsx"))
+        
+        if not excel_files:
+            print("⚠️  Dados processados não encontrados, gerando automaticamente...")
+            print(f"    Buscando dados base em: {settings.BASE_DIR / 'src' / 'bases'}")
+            
+            # Verificar se arquivo base existe
+            base_file = settings.BASE_DIR / "src" / "bases" / "dados_pedras_baixo_erro.xlsx"
+            if not base_file.exists():
+                print(f"❌ Arquivo base não encontrado: {base_file}")
+                print("   Treinamento via upload ainda disponível")
+                return
+            
+            # Gerar dados processados
+            df = load_and_preprocess_data(save_output=True)
+            print(f"✅ Dados processados gerados: {len(df)} registros")
+            print(f"    Salvos em: {treated_path}")
+        else:
+            print(f"✅ Dados processados encontrados: {len(excel_files)} arquivo(s)")
+            print(f"    Mais recente: {max(excel_files, key=lambda x: x.stat().st_mtime).name}")
+            
+    except Exception as e:
+        import traceback
+        print(f"⚠️  Erro ao inicializar dados de treinamento: {e}")
+        print(f"    Detalhes: {traceback.format_exc()[:200]}")
+        print("    Treinamento via upload ainda disponível")
 
 
 @app.on_event("shutdown")
