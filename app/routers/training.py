@@ -102,7 +102,7 @@ async def start_training(
         "status": "started",
         "task_id": task_id,
         "message": "Treinamento iniciado em background",
-        "parameters": parameters.dict()
+        "parameters": parameters.model_dump()
     }
 
 
@@ -226,7 +226,7 @@ async def get_training_result(task_id: str):
             detail={
                 "error_code": "TASK_NOT_COMPLETED",
                 "message": f"Task ainda não foi concluída. Status atual: {task.status}",
-                "current_status": task.dict()
+                "current_status": task.model_dump()
             }
         )
     

@@ -32,7 +32,7 @@ class TrainingParameters(BaseModel):
     learning_rate: Optional[float] = Field(0.1, ge=0.01, le=0.3, description="Taxa de aprendizado")
     test_size: Optional[float] = Field(0.2, ge=0.1, le=0.3, description="Proporção do test set")
     random_state: Optional[int] = Field(42, description="Seed para reprodutibilidade")
-    use_feast: Optional[bool] = Field(True, description="Usar Feast feature store")
+    use_feast: Optional[bool] = Field(False, description="Usar Feast feature store")
     
     class Config:
         json_schema_extra = {
@@ -42,7 +42,7 @@ class TrainingParameters(BaseModel):
                 "learning_rate": 0.1,
                 "test_size": 0.2,
                 "random_state": 42,
-                "use_feast": True
+                "use_feast": False
             }
         }
 
